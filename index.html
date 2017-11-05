@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sharpwater</title>
+    <!-- TODO: design an icon for the webpage tab -->
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/chessboard-0.3.0.css">
+    <link rel="stylesheet" href="morecss.css">
+</head>
+<body>
+    
+    <!-- Center a button to login somewhere on the page -->
+    
+    <!-- Transposition tables and ordering -->
+    <!-- Iterative deepening search ? -->
+    
+    <h1 class="centerText">What should I put here?</h1>
+    
+    <div id="parent">
+        <div id="wide">
+            <p class="centerText">Positions evaluated: <span id="position-count"></span></p>
+            <p class="centerText" id="time">Calculation time: <span id="timespan"></span></p>
+        
+        </div>
+        <div id="board" class="board"></div>    
+        <div id="wide">
+        
+            <p class="centerText" id="lastMove">Last move: No moves yet.</p>
+            <p class="leftText">How to read moves:
+                <br>
+                Pawns = no letter prefix
+                <br>
+                Knights = 'n'
+                <br>
+                Rooks = 'r'
+                <br>
+                Bishops = 'b'
+                <br>
+                Queens = 'q'
+                <br>
+                Kings = 'k'
+                <br>
+                Prefix is followed by the coordinate of the new tile.
+            </p>
+        </div>
+    </div>
+    
+    
+    <br>
+    <p id="status"></p>
+    
+    <script src="jquery-3.2.1.min.js"></script>
+    <script src="js/chessboard-0.3.0.js"></script>    
+    <script src="js/chess.js"></script>
+    <script src="myjs.js"></script>    
+    
+</body>
+</html>

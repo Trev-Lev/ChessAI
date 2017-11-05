@@ -1,0 +1,44 @@
+.board {
+    width: 375px;
+    margin: auto;
+}
+
+.centerText {
+    text-align: center;
+}
+
+.leftText {
+    text-align: left;
+}
+
+body {
+    background: linear-gradient(#85c1e9, #d6eaf8) fixed;
+}
+
+#parent {
+    display: flex;
+    border: 2px solid black;
+    background: linear-gradient(#ecf0f1, #17202a) fixed;
+}
+
+#narrow {
+    width: 15%;
+    border: 2px solid black;
+}
+
+#wide {
+    flex: 1;
+    border: 1px solid #404040;
+    /*
+    background: linear-gradient(#ecf0f1, #17202a) fixed;
+    margin: 0, 0, 0, 0;
+    padding: 0, 0, 0, 0;
+    border-collapse: collapse;
+*/
+}
+
+#status {
+    text-align: center;
+    font: italic bold 12px arial;
+}
+
