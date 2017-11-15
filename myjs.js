@@ -11,6 +11,8 @@ var board, game = new Chess();
 // Start values for alpha-beta pruning
 var STARTALPHA = -10000;
 var STARTBETA = 10000;
+var isEndgame = false;
+var endgameCheck = true;    // Becomes false when no longer needed
 
 // do not pick up pieces if the game is over
 // only pick up pieces for White - change?
@@ -67,8 +69,6 @@ var onDrop = function(source, target) {
     // illegal move
     if (move === null) return 'snapback';
     
-    
-
     // MAGIC HAPPENS HERE
     // Begin the minimax in 250 ms after a legal move!
     $('#status').text('Thinking...');
@@ -232,42 +232,42 @@ var knightEval =
 // BISHOP: Same as above, black is mirrored.
 var whiteBishopEval = 
     [
-        [-2, -1, -1, -1, -1, -1, -1, -2],
-        [-1, 0, 0, 0, 0, 0, 0, -1],
-        [-1, 0, 0.5, 1, 1, 0.5, 0, -1],
-        [-1, 0.5, 0.5, 1, 1, 0.5, 0.5, -1],
-        [-1, 0, 1, 1, 1, 1, 0, -1],
-        [-1, 1, 1, 1, 1, 1, 1, -1],
-        [-1, 0.5, 0, 0, 0, 0, 0.5, -1],
-        [-2, -1, -1, -1, -1, -1, -1, -2]
+        [-2,  -1,  -1,  -1,  -1,  -1,  -1,  -2],
+        [-1,   0,   0,   0,   0,   0,   0,  -1],
+        [-1,   0, 0.5,   1,   1, 0.5,   0,  -1],
+        [-1, 0.5, 0.5,   1,   1, 0.5, 0.5, -1],
+        [-1,   0,   1,   1,   1,   1,   0, -1],
+        [-1,   1,   1,   1,   1,   1,   1, -1],
+        [-1, 0.5,   0,   0,   0,   0, 0.5, -1],
+        [-2,  -1,  -1,  -1,  -1,  -1,  -1, -2]
     ];
 var blackBishopEval = reverseArr(whiteBishopEval);
 
 // ROOK: Same as above, black is mirrored.
 var whiteRookEval = 
     [
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0.5, 1, 1, 1, 1, 1, 1, 0.5],
-        [-0.5, 0, 0, 0, 0, 0, 0, -0.5],
-        [-0.5, 0, 0, 0, 0, 0, 0, -0.5],
-        [-0.5, 0, 0, 0, 0, 0, 0, -0.5],
-        [-0.5, 0, 0, 0, 0, 0, 0, -0.5],
-        [-0.5, 0, 0, 0, 0, 0, 0, -0.5],
-        [0, 0, 0, 0.5, 0.5, 0, 0, 0]
+        [0,   0,   0,   0,   0,   0,   0,   0],
+        [0.5, 1,   1,   1,   1,   1,   1, 0.5],
+        [-0.5, 0,  0,   0,   0,   0,   0, -0.5],
+        [-0.5, 0,  0,   0,   0,   0,   0, -0.5],
+        [-0.5, 0,  0,   0,   0,   0,   0, -0.5],
+        [-0.5, 0,  0,   0,   0,   0,   0, -0.5],
+        [-0.5, 0,  0,   0,   0,   0,   0, -0.5],
+        [0,    0,  0, 0.5,  0.5,  0,   0, 0]
     ];
 var blackRookEval = reverseArr(whiteRookEval);
 
 // QUEEN: Same for each side.
 var queenEval = 
     [
-        [-2, -1, -1, -0.5, -0.5, -1, -1, -2],
-        [-1, 0, 0, 0, 0, 0, 0, -1],
-        [-1, 0, 0.5, 0.5, 0.5, 0.5, 0, -1],
-        [-0.5, 0, 0.5, 0.5, 0.5, 0.5, 0, -0.5],
-        [0, 0, 0.5, 0.5, 0.5, 0.5, 0, -0.5],
-        [-1, 0.5, 0.5, 0.5, 0.5, 0.5, 0, -1],
-        [-1, 0, 0.5, 0, 0, 0, 0, -1],
-        [-2, -1, -1, -0.5, -0.5, -1, -1, -2]
+        [-2,  -1,  -1,  -0.5,  -0.5,  -1,  -1,  -2],
+        [-1,   0,   0,     0,     0,   0,   0, -1],
+        [-1,   0, 0.5,   0.5,   0.5, 0.5,   0, -1],
+        [-0.5, 0, 0.5,   0.5,   0.5, 0.5,   0, -0.5],
+        [0,    0, 0.5,   0.5,   0.5, 0.5,   0, -0.5],
+        [-1, 0.5, 0.5,   0.5,   0.5, 0.5,   0, -1],
+        [-1,   0, 0.5,     0,     0,   0,   0, -1],
+        [-2,  -1,  -1,  -0.5,  -0.5,  -1,  -1, -2]
     ];
 
 // KING: Same as above, black is mirrored. Two separate arrays.
@@ -276,11 +276,11 @@ var whiteKingEvalMidgame =
         [-3, -4, -4, -5, -5, -4, -4, -3],
         [-3, -4, -4, -5, -5, -4, -4, -3],
         [-3, -4, -4, -5, -5, -4, -4, -3],
-        [-3,-4, -4, -5, -5, -4, -4, -3],
+        [-3, -4, -4, -5, -5, -4, -4, -3],
         [-2, -3, -3, -4, -4, -3, -3, -2],
         [-1, -2, -2, -2, -2, -2, -2, -1],
-        [2, 2, 0, 0, 0, 0, 2, 2],
-        [2, 3, 1, 0, 0, 1, 3, 2]
+        [2,   2,  0,  0,  0,  0,  2, 2],
+        [2,   3,  1,  0,  0,  1,  3, 2]
     ];
 var blackKingEvalMidgame = reverseArr(whiteKingEvalMidgame);
 
@@ -288,12 +288,12 @@ var blackKingEvalMidgame = reverseArr(whiteKingEvalMidgame);
 var whiteKingEvalEndgame = 
     [
         [-5, -4, -3, -2, -2, -3, -4, -5],
-        [-3, -2, -1, 0, 0, -1, -2, -3],
-        [-3, -1, 2, 3, 3, 2, -1, -3],
-        [-3, -1, 3, 4, 4, 3, -1, -3],
-        [-3, -1, 3, 4, 4, 3, -1, -3],
-        [-3, -1, 2, 3, 3, 2, -1, -3],
-        [-3, -3, 0, 0, 0, 0, -3, -3],
+        [-3, -2, -1,  0,  0, -1, -2, -3],
+        [-3, -1,  2,  3,  3,  2, -1, -3],
+        [-3, -1,  3,  4,  4,  3, -1, -3],
+        [-3, -1,  3,  4,  4,  3, -1, -3],
+        [-3, -1,  2,  3,  3,  2, -1, -3],
+        [-3, -3,  0,  0,  0,  0, -3, -3],
         [-5, -3, -3, -3, -3, -3, -3, -5]
     ];
 var blackKingEvalEndgame = reverseArr(whiteKingEvalEndgame);
@@ -304,8 +304,11 @@ var evaluateBoard = function (board) {
     // Assumes the board is evaluated for >BLACK<!
     // TODO: add more to improve it lul
     
-    //var isMidgame = noQueens(board);    // true if no queens
-    //isMidgame = !isMidgame;             // true if queens 
+    // First, check the queens
+    if (!isEndgame) {
+        var queens = checkQueens(board);
+        if (queens === false) isEndgame = true;
+    }
     
     var boardScore = 0;
     
@@ -319,74 +322,58 @@ var evaluateBoard = function (board) {
 
 var getSquareValue = function (piece, x, y) {
     if (piece === null) return 0;
-    var getVal = function(piece, isWhite, x, y) {
-        if (piece.type === 'p') return 10 + (isWhite ? whitePawnEval[y][x] : blackPawnEval[y][x]);
-        else if (piece.type === 'r') return 50 + (isWhite ? whiteRookEval[y][x] : blackRookEval[y][x]);
-        else if (piece.type === 'b') return 30 + (isWhite ? whiteBishopEval[y][x] : blackBishopEval[y][x]);
-        else if (piece.type === 'k') return 900 + (isWhite ? whiteKingEvalMidgame[y][x] : blackKingEvalMidgame[y][x]);
-        else if (piece.type === 'n') return 30 + knightEval[y][x];
-        else if (piece.type === 'q') return 90 + queenEval[y][x];
-        throw "UNKNOWN PIECE TYPE: " + piece.type;
-    };
+    if (!isEndgame) {
+        var getVal = function(piece, isWhite, x, y) {
+            if (piece.type === 'p') return 10 + (isWhite ? whitePawnEval[y][x] : blackPawnEval[y][x]);
+            else if (piece.type === 'r') return 50 + (isWhite ? whiteRookEval[y][x] : blackRookEval[y][x]);
+            else if (piece.type === 'b') return 30 + (isWhite ? whiteBishopEval[y][x] : blackBishopEval[y][x]);
+            else if (piece.type === 'k') return 900 + (isWhite ? whiteKingEvalMidgame[y][x] : blackKingEvalMidgame[y][x]);
+            else if (piece.type === 'n') return 30 + knightEval[y][x];
+            else if (piece.type === 'q') return 90 + queenEval[y][x];
+            throw "UNKNOWN PIECE TYPE: " + piece.type;
+        };
+    } else 
+        var getVal = function(piece, isWhite, x, y) {
+            if (piece.type === 'p') return 10 + (isWhite ? whitePawnEval[y][x] : blackPawnEval[y][x]);
+            else if (piece.type === 'r') return 50 + (isWhite ? whiteRookEval[y][x] : blackRookEval[y][x]);
+            else if (piece.type === 'b') return 30 + (isWhite ? whiteBishopEval[y][x] : blackBishopEval[y][x]);
+            else if (piece.type === 'k') return 900 + (isWhite ? whiteKingEvalEndgamegame[y][x] : blackKingEvalEndgamegame[y][x]);
+            else if (piece.type === 'n') return 30 + knightEval[y][x];
+            else if (piece.type === 'q') return 90 + queenEval[y][x];
+            throw "UNKNOWN PIECE TYPE: " + piece.type;
+        };
     var val = getVal(piece, piece.color === 'w', x, y);
     return piece.color === 'w' ? val : -val;
 }
 
 /* - PERSONAL HELPER FUNCTIONS - */
-
 // Returns a new and reversed instance of an array
 function reverseArr(arr) {
     return arr.slice().reverse();
 }
 
+// Work in progress. What to add?
 function printEndMessage() {
     
 }
 
-// Returns score of a piece during the midgame
-/* not in use
-function midgamePieceValue (piece, isWhite, row, col) {
-    if (piece.type === 'p') return 10+(isWhite ? whitePawnEval[row][col] : blackPawnEval[row][col]);
-    else if (piece.type === 'r') return 50+(isWhite ? whiteRookEval[row][col] : blackRookEval[row][col]);
-    else if (piece.type === 'b') return 30+(isWhite ? whiteBishopEval[row][col] : blackBishopEval[row][col]);
-    else if (piece.type === 'n') return 30+knightEval[row][col];
-    else if (piece.type === 'q') return 90+queenEval[row][col];
-    else if (piece.type === 'k') return 900+(isWhite ? whiteKingEvalMidgame : blackKingEvalMidgame);
-    throw "UNKNOWN PIECE TYPE: " + piece.type;
-}
-*/
-
-// Returns score of a piece during the endgame
-/* not in use
-function endgamePieceValue (piece, isWhite, row, col) {
-    switch(piece.type) {
-        case 'p':
-            return 10 + (isWhite ? whitePawnEval[row][col] : blackPawnEval[row][col]);
-        case 'r':
-            return 50 + (isWhite ? whiteRookEval[row][col] : blackRookEval[row][col]);
-        case 'n':
-            return 30 + knightEval[row][col];
-        case 'b':
-            return 30 + (isWhite ? whiteBishopEval[row][col] : blackBishopEval[row][col]);
-        case 'q':
-            return 100 + queenEval[row][col];
-        case 'k':
-            return 9001 + (isWhite ? whiteKingEvalEndgame[row][col] : blackKingEvalEndgame[row][col]);
-    }
-}
-*/
-// Returns true if no queens are on the board, false otherwise
-// Currently not working as game.board() does not exist?
-/*
-var noQueens = function(board) {
+// Endgame check
+function checkQueens(board) {
     for (var i = 0; i < 8; i++) {
         for (var j = 0; j < 8; j++) {
-            if (board[i][j].type === 'q') return false;   // return false if queen is present
+            var temp = ifQueen(board[i][j]);
+            if (temp === true) return true;    // There was a queen found 
         }
     }
-    return true;
-};
-*/
+    return false;   // No queen found
+}
+
+// Return true if queen, false otherwise
+var ifQueen = function(piece) {
+    if(piece == null) return false;
+    else if (piece.type === 'q') return true;
+    else return false;
+}
 
 // Configuration:
 var cfg = {
