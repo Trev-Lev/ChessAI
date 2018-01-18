@@ -6,4 +6,3 @@ Currently the evaluation function is quite weak and anywhere from 1000-2000 stat
 
 I plan on adding [Transposition Tables](https://en.wikipedia.org/wiki/Transposition_table "Wikipedia") sometime in the future to make playing against it a bit more bearable.
 
-Play now [here.](http://ec2-54-146-141-144.compute-1.amazonaws.com/randomstuff/AIChess/)
